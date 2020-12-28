@@ -18,22 +18,45 @@ function getOpenIssues(repoOwner, repo) {
   return response;
 }
 
-function filterTime(pullRequest) {
-  const ageInSecs = Math.round((Date.now() - (new Date(pullRequest.created_at).getTime())) / 1000);
-  const minAgeInSecs = parseInt(skipHour) * 60 * 60;
-  if (ageInSecs > minAgeInSecs) {
-    return true;
-  }
-  return false;
+// function filterTime(pullRequest) {
+//   const ageInSecs = Math.round((Date.now() - (new Date(pullRequest.created_at).getTime())) / 1000);
+//   const minAgeInSecs = parseInt(skipHour) * 60 * 60;
+//   if (ageInSecs > minAgeInSecs) {
+//     return true;
+//   }
+//   return false;
+// }
+
+function getTimeInactiveInHours(issue) {
+  const timeInactiveInHours = Math.round(
+    (Date.now() - (new Date(issue.updated_at).getTime())) / (1000 * 60 * 60)
+  );
+  return timeInactiveInHours;
 }
 
 async function main() {
-  const issues = await getOpenIssues(repoOwner, repo);
-  var data = issues.data;
-  data = data.filter((ele) => {
-    return ele.pull_request === undefined;
+  const issuesRes = await getOpenIssues(repoOwner, repo);
+  var issuesAry = issuesRes.data;
+
+  // Remove pull requests -- we only want issues under the "Issues" tab of GitHub
+  issuesAry = issuesAry.filter(issue => {
+    return issue.pull_request === undefined;
   });
-  console.log(data);
+
+  console.log(issuesAry); // DEBUG
+
+  issuesAry.forEach(issue => {
+    const timeInactiveInHours = getTimeInactiveInHours(issue);
+    if (timeInactiveInHours >= unassignInactiveInHours) {
+      // Unassign the issue
+      octokit.issues.removeAssignees({
+        owner: repoOwner,
+        repo: repo,
+        issue_number: issue.number,
+        assignees: issue.assignees
+      });
+    }
+  });
 }
 
 main();
