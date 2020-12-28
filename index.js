@@ -10,7 +10,7 @@ async function getOpenIssues(repoOwner, repo) {
   const octokit = github.getOctokit(token);
   var response = null;
   try {
-    response = await octokit.issues.listForRepo({
+    response = octokit.issues.listForRepo({
       owner: repoOwner,
       repo: repo,
       state: 'open'
