@@ -97,20 +97,31 @@ async function main() {
       ///////////////////////
       // Post in the issue //
       ///////////////////////
-      const body = `This issue has been inactive for ${timeInactiveInHours} ` +
-                   `hours (${(timeInactiveInHours/24).toFixed(2)} days) ` +
-                   `and will be automatically unassigned after ${unassignInactiveInHours} ` +
-                   `hours (${(unassignInactiveInHours/24).toFixed(2)} days).`;
-      try {
-        await octokit.issues.createComment({
-          owner: repoOwner,
-          repo: repo,
-          issue_number: issue.number,
-          body: body
-        });
-      }
-      catch (e) {
-        console.log(e.message);
+      // First check to make sure the previous comment is not from the bot so
+      // we don't get a spam of comments.
+      const comments = await octokit.issues.listComments({
+        owner: repoOwner,
+        repo: repo,
+        issue_number: issue.number
+      });
+      if (comments.data.length === 0 ||
+          comments.data[comments.data.length - 1].user.login !== 'github-actions[bot]'
+      ) {
+        const body = `This issue has been inactive for ${timeInactiveInHours} ` +
+                     `hours (${(timeInactiveInHours/24).toFixed(2)} days) ` +
+                     `and will be automatically unassigned after ${unassignInactiveInHours} ` +
+                     `hours (${(unassignInactiveInHours/24).toFixed(2)} days).`;
+        try {
+          await octokit.issues.createComment({
+            owner: repoOwner,
+            repo: repo,
+            issue_number: issue.number,
+            body: body
+          });
+        }
+        catch (e) {
+          console.log(e.message);
+        }
       }
     }
   });
