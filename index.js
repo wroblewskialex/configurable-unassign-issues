@@ -29,6 +29,7 @@ async function getTimeInactiveInHours(issue) {
     issue_number: issue.number
   });
   var lastUpdated = null;
+  console.log(comments);
   if (comments.data.length > 0) {
     comments.data.reverse().forEach(comment => {
       if (comment.user.login === 'github-actions[bot]') {
