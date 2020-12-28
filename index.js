@@ -22,13 +22,14 @@ async function getOpenIssues(repoOwner, repo) {
   return response;
 }
 
-function getTimeInactiveInHours(issue) {
+async function getTimeInactiveInHours(issue) {
   // const lastUpdated = issue.updated_at;
-  const comments = octokit.issues.listComments({
+  const comments = await octokit.issues.listComments({
     owner: repoOwner,
     repo: repo,
     issue_number: issue.number
   });
+  console.log(comments);
   var lastUpdated = null;
   comments.reverse().forEach(comment => {
     if (comment.user.login === 'github-actions[bot]') {
