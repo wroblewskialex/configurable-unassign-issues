@@ -31,7 +31,7 @@ async function main() {
   const issues = await getOpenIssues(repoOwner, repo);
   var data = issues.data;
   data = data.filter((ele) => {
-    ele.pull_request === null;
+    ele.pull_request === undefined;
   });
   console.log(data);
 }
