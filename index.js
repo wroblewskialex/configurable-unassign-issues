@@ -49,6 +49,7 @@ async function getTimeInactiveInHours(issue) {
     timeInactiveInHours = Math.round(
       (Date.now() - (new Date(lastUpdated).getTime())) / (1000 * 60 * 60)
     );
+    console.log(`timeInactiveInHours=${timeInactiveInHours}`);
   }
   catch (e) {
     console.log(e.message);
