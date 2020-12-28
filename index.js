@@ -22,8 +22,8 @@ async function getOpenIssues(repoOwner, repo) {
   return response;
 }
 
-function getTimeInactiveInHours(issue) {
-  const comments = octokit.issues.listComments({
+async function getTimeInactiveInHours(issue) {
+  const comments = await octokit.issues.listComments({
     owner: repoOwner,
     repo: repo,
     issue_number: issue.number
