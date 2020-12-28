@@ -43,7 +43,8 @@ async function getTimeInactiveInHours(issue) {
   else {
     lastUpdated = issue.created_at;
   }
-  console.log(`lastUpdated=${lastUpdated}`);
+  console.log(issue);
+  console.log(`issue.created_at=${issue.created_at}`);
   var timeInactiveInHours = null;
   try {
     timeInactiveInHours = Math.round(
