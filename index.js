@@ -29,15 +29,20 @@ async function getTimeInactiveInHours(issue) {
     issue_number: issue.number
   });
   var lastUpdated = null;
-  comments.data.reverse().forEach(comment => {
-    if (comment.user.login === 'github-actions[bot]') {
-      return true;
-    }
-    else {
-      lastUpdated = comment.created_at;
-      return false;
-    }
-  });
+  if (comments.data.length > 0) {
+    comments.data.reverse().forEach(comment => {
+      if (comment.user.login === 'github-actions[bot]') {
+        return true;
+      }
+      else {
+        lastUpdated = comment.created_at;
+        return false;
+      }
+    });
+  }
+  else {
+    lastUpdated = issue.created_at;
+  }
   var timeInactiveInHours = null;
   try {
     timeInactiveInHours = Math.round(
@@ -60,8 +65,6 @@ async function main() {
   issuesAry = issuesAry.filter(issue => {
     return issue.pull_request === undefined;
   });
-
-  console.log(issuesAry); // DEBUG
 
   // For inactive issues, unassign the issue or post a warning message
   // in it that it will be unassigned in the near future.
