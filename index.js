@@ -40,7 +40,7 @@ async function getTimeInactiveInHours(issue) {
   });
   var timeInactiveInHours = null;
   try {
-    Math.round(
+    timeInactiveInHours = Math.round(
       (Date.now() - (new Date(lastUpdated).getTime())) / (1000 * 60 * 60)
     );
   }
