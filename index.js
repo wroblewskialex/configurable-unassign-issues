@@ -23,9 +23,31 @@ async function getOpenIssues(repoOwner, repo) {
 }
 
 function getTimeInactiveInHours(issue) {
-  const timeInactiveInHours = Math.round(
-    (Date.now() - (new Date(issue.updated_at).getTime())) / (1000 * 60 * 60)
-  );
+  // const lastUpdated = issue.updated_at;
+  const comments = octokit.issues.listComments({
+    owner: repoOwner,
+    repo: repo,
+    issue_number: issue.number
+  });
+  var lastUpdated = null;
+  comments.reverse().forEach(comment => {
+    if (comment.user.login === 'github-actions[bot]') {
+      return true;
+    }
+    else {
+      lastUpdated = comment.created_at;
+      return false;
+    }
+  });
+  var timeInactiveInHours = null;
+  try {
+    Math.round(
+      (Date.now() - (new Date(lastUpdated).getTime())) / (1000 * 60 * 60)
+    );
+  }
+  catch (e) {
+    console.log(e.message);
+  }
   return timeInactiveInHours;
 }
 
@@ -46,6 +68,8 @@ async function main() {
   // in it that it will be unassigned in the near future.
   issuesAry.forEach(async issue => {
     const timeInactiveInHours = getTimeInactiveInHours(issue);
+    if (!timeInactiveInHours) return;
+    console.log(`timeInactiveInHours=${timeInactiveInHours}`);
     if (timeInactiveInHours >= unassignInactiveInHours) {
       ////////////////////////
       // Unassign the issue //
