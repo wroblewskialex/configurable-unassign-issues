@@ -36,6 +36,7 @@ async function getTimeInactiveInHours(issue) {
       }
       else {
         lastUpdated = comment.created_at;
+        console.log(`lastUpdated=${lastUpdated}`);
         return false;
       }
     });
@@ -72,7 +73,6 @@ async function main() {
     const timeInactiveInHours = await getTimeInactiveInHours(issue);
     if (timeInactiveInHours === null) return;
     console.log(`timeInactiveInHours=${timeInactiveInHours}`);
-    console.log(`unassignInactiveInHours=${unassignInactiveInHours}`);
     if (timeInactiveInHours >= unassignInactiveInHours) {
       ////////////////////////
       // Unassign the issue //
