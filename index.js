@@ -65,10 +65,27 @@ async function main() {
         console.log(e.message);
       }
     }
-    else if (timeInactiveInHours >= warningInactiveInHours) {
+    else if (timeInactiveInHours >= warningInactiveInHours &&
+             issue.assignees.length > 0
+    ) {
       ///////////////////////
       // Post in the issue //
       ///////////////////////
+      const body = `This issue has been inactive for ${timeInactiveInHours} ` +
+                   `hours (${(timeInactiveInHours/24).toFixed(2)} days) ` +
+                   `and will be automatically unassigned after ${unassignInactiveInHours} ` +
+                   `hours (${(unassignInactiveInHours/24).toFixed(2)} days).`;
+      try {
+        await octokit.issues.createComment({
+          owner: repoOwner,
+          repo: repo,
+          issue_number: issue.number,
+          body: body
+        });
+      }
+      catch (e) {
+        console.log(e.message);
+      }
     }
   });
 }
