@@ -33,6 +33,7 @@ async function main() {
   // Get all open issues, including PRs.
   const issuesRes = getOpenIssues(repoOwner, repo);
   if (!issuesRes) return;
+  console.log(issuesRes);
 
   // Remove pull requests -- we only want issues under the "Issues" tab of GitHub
   var issuesAry = issuesRes.data;
