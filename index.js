@@ -6,26 +6,21 @@ const warningInactiveInHours = core.getInput('warning_inactive_in_hours');
 const repoOwner = github.context.repo.owner;
 const repo = github.context.repo.repo;
 
-function getOpenIssues(repoOwner, repo) {
+async function getOpenIssues(repoOwner, repo) {
   const octokit = github.getOctokit(token);
-  const response = octokit.issues.listForRepo({
-    owner: repoOwner,
-    repo: repo,
-    state: 'open'
-  })["catch"](function (e) {
+  var response = null;
+  try {
+    response = await octokit.issues.listForRepo({
+      owner: repoOwner,
+      repo: repo,
+      state: 'open'
+    });
+  }
+  catch (e) {
     console.log(e.message);
-  });
+  }
   return response;
 }
-
-// function filterTime(pullRequest) {
-//   const ageInSecs = Math.round((Date.now() - (new Date(pullRequest.created_at).getTime())) / 1000);
-//   const minAgeInSecs = parseInt(skipHour) * 60 * 60;
-//   if (ageInSecs > minAgeInSecs) {
-//     return true;
-//   }
-//   return false;
-// }
 
 function getTimeInactiveInHours(issue) {
   const timeInactiveInHours = Math.round(
@@ -35,26 +30,42 @@ function getTimeInactiveInHours(issue) {
 }
 
 async function main() {
-  const issuesRes = await getOpenIssues(repoOwner, repo);
-  var issuesAry = issuesRes.data;
+  // Get all open issues, including PRs.
+  const issuesRes = getOpenIssues(repoOwner, repo);
+  if (!issuesRes) return;
 
   // Remove pull requests -- we only want issues under the "Issues" tab of GitHub
+  var issuesAry = issuesRes.data;
   issuesAry = issuesAry.filter(issue => {
     return issue.pull_request === undefined;
   });
 
   console.log(issuesAry); // DEBUG
 
+  // For inactive issues, unassign the issue or post a warning message
+  // in it that it will be unassigned in the near future.
   issuesAry.forEach(issue => {
     const timeInactiveInHours = getTimeInactiveInHours(issue);
     if (timeInactiveInHours >= unassignInactiveInHours) {
-      // Unassign the issue
-      octokit.issues.removeAssignees({
-        owner: repoOwner,
-        repo: repo,
-        issue_number: issue.number,
-        assignees: issue.assignees
-      });
+      ////////////////////////
+      // Unassign the issue //
+      ////////////////////////
+      try {
+        await octokit.issues.removeAssignees({
+          owner: repoOwner,
+          repo: repo,
+          issue_number: issue.number,
+          assignees: issue.assignees
+        });
+      }
+      catch (e) {
+        console.log(e.message);
+      }
+    }
+    else if (timeInactiveInHours >= warningInactiveInHours) {
+      ///////////////////////
+      // Post in the issue //
+      ///////////////////////
     }
   });
 }
