@@ -30,11 +30,10 @@ function filterTime(pullRequest) {
 async function main() {
   const issues = await getOpenIssues(repoOwner, repo);
   var data = issues.data;
-  // data = data.filter((ele) => {
-  //   ele.pull_request === undefined;
-  // });
+  data = data.filter((ele) => {
+    return ele.pull_request === undefined;
+  });
   console.log(data);
-  console.log('data[0].pull_request=', data[0].pull_request);
 }
 
 main();
