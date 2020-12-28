@@ -23,15 +23,13 @@ async function getOpenIssues(repoOwner, repo) {
 }
 
 async function getTimeInactiveInHours(issue) {
-  // const lastUpdated = issue.updated_at;
   const comments = await octokit.issues.listComments({
     owner: repoOwner,
     repo: repo,
     issue_number: issue.number
   });
-  console.log(comments);
   var lastUpdated = null;
-  comments.reverse().forEach(comment => {
+  comments.data.reverse().forEach(comment => {
     if (comment.user.login === 'github-actions[bot]') {
       return true;
     }
@@ -54,7 +52,7 @@ async function getTimeInactiveInHours(issue) {
 
 async function main() {
   // Get all open issues, including PRs.
-  const issuesRes = await getOpenIssues(repoOwner, repo);
+  const issuesRes = getOpenIssues(repoOwner, repo);
   if (!issuesRes) return;
 
   // Remove pull requests -- we only want issues under the "Issues" tab of GitHub
