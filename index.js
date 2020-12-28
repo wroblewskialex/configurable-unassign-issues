@@ -36,7 +36,6 @@ async function getTimeInactiveInHours(issue) {
       }
       else {
         lastUpdated = comment.created_at;
-        console.log(`lastUpdated=${lastUpdated}`);
         return false;
       }
     });
@@ -44,6 +43,7 @@ async function getTimeInactiveInHours(issue) {
   else {
     lastUpdated = issue.created_at;
   }
+  console.log(`lastUpdated=${lastUpdated}`);
   var timeInactiveInHours = null;
   try {
     timeInactiveInHours = Math.round(
