@@ -29,22 +29,19 @@ async function getTimeInactiveInHours(issue) {
     issue_number: issue.number
   });
   var lastUpdated = null;
-  if (comments.data.length > 0) {
-    comments.data.reverse().forEach(comment => {
-      if (comment.user.login === 'github-actions[bot]') {
-        return true;
-      }
-      else {
-        lastUpdated = comment.created_at;
-        return false;
-      }
-    });
+  comments.data.reverse().forEach(comment => {
+    if (comment.user.login === 'github-actions[bot]') {
+      return true;
+    }
+    else {
+      lastUpdated = comment.created_at;
+      return false;
+    }
+  });
+  if (!lastUpdated) {
+    lastUpdated = comment.created_at;
   }
-  else {
-    lastUpdated = issue.created_at;
-  }
-  console.log(issue);
-  console.log(`issue.created_at=${issue.created_at}`);
+
   var timeInactiveInHours = null;
   try {
     timeInactiveInHours = Math.round(
