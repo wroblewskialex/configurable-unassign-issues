@@ -5,9 +5,9 @@ const unassignInactiveInHours = core.getInput('unassign_inactive_in_hours');
 const warningInactiveInHours = core.getInput('warning_inactive_in_hours');
 const repoOwner = github.context.repo.owner;
 const repo = github.context.repo.repo;
+const octokit = github.getOctokit(token);
 
 async function getOpenIssues(repoOwner, repo) {
-  const octokit = github.getOctokit(token);
   var response = null;
   try {
     response = await octokit.issues.listForRepo({
