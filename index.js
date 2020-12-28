@@ -43,13 +43,11 @@ async function getTimeInactiveInHours(issue) {
   else {
     lastUpdated = issue.created_at;
   }
-  console.log(`lastUpdated=${lastUpdated}`)
   var timeInactiveInHours = null;
   try {
     timeInactiveInHours = Math.round(
       (Date.now() - (new Date(lastUpdated).getTime())) / (1000 * 60 * 60)
     );
-    console.log(`timeInactiveInHours=${timeInactiveInHours}`);
   }
   catch (e) {
     console.log(e.message);
@@ -72,7 +70,7 @@ async function main() {
   // in it that it will be unassigned in the near future.
   issuesAry.forEach(async issue => {
     const timeInactiveInHours = await getTimeInactiveInHours(issue);
-    if (!timeInactiveInHours) return;
+    if (timeInactiveInHours === null) return;
     console.log(`timeInactiveInHours=${timeInactiveInHours}`);
     if (timeInactiveInHours >= unassignInactiveInHours) {
       ////////////////////////
