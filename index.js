@@ -44,7 +44,7 @@ async function main() {
 
   // For inactive issues, unassign the issue or post a warning message
   // in it that it will be unassigned in the near future.
-  issuesAry.forEach(issue => {
+  issuesAry.forEach(async issue => {
     const timeInactiveInHours = getTimeInactiveInHours(issue);
     if (timeInactiveInHours >= unassignInactiveInHours) {
       ////////////////////////
