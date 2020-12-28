@@ -23,6 +23,7 @@ async function getOpenIssues(repoOwner, repo) {
 }
 
 async function getTimeInactiveInHours(issue) {
+  // Get the last update time, ignoring comments from the bot.
   const comments = await octokit.issues.listComments({
     owner: repoOwner,
     repo: repo,
@@ -39,7 +40,9 @@ async function getTimeInactiveInHours(issue) {
     }
   });
   if (!lastUpdated) {
-    lastUpdated = comment.created_at;
+    // If we get here, it means there were no comments, or they were all from
+    // the bot. So the update time should be the issue creation time.
+    lastUpdated = issue.created_at;
   }
 
   var timeInactiveInHours = null;
