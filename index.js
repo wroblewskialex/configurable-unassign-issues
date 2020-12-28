@@ -33,7 +33,6 @@ async function main() {
   // Get all open issues, including PRs.
   const issuesRes = await getOpenIssues(repoOwner, repo);
   if (!issuesRes) return;
-  console.log(issuesRes);
 
   // Remove pull requests -- we only want issues under the "Issues" tab of GitHub
   var issuesAry = issuesRes.data;
@@ -51,12 +50,15 @@ async function main() {
       ////////////////////////
       // Unassign the issue //
       ////////////////////////
+      const assigneesAry = issue.assignees.map(assignee => {
+        return assignee.login;
+      });
       try {
         await octokit.issues.removeAssignees({
           owner: repoOwner,
           repo: repo,
           issue_number: issue.number,
-          assignees: issue.assignees
+          assignees: assigneesAry
         });
       }
       catch (e) {
