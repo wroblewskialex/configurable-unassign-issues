@@ -10,7 +10,7 @@ async function getOpenIssues(repoOwner, repo) {
   const octokit = github.getOctokit(token);
   var response = null;
   try {
-    response = octokit.issues.listForRepo({
+    response = await octokit.issues.listForRepo({
       owner: repoOwner,
       repo: repo,
       state: 'open'
@@ -31,7 +31,7 @@ function getTimeInactiveInHours(issue) {
 
 async function main() {
   // Get all open issues, including PRs.
-  const issuesRes = getOpenIssues(repoOwner, repo);
+  const issuesRes = await getOpenIssues(repoOwner, repo);
   if (!issuesRes) return;
   console.log(issuesRes);
 
