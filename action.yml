@@ -7,11 +7,11 @@ inputs:
     default: ''
   unassign_inactive_in_hours:
     description: 'Number of hours to wait before unassigning an issue'
-    required: true
+    required: false
     default: 168 # 7 days
   warning_inactive_in_hours:
     description: 'Number of hours to wait before posting a warning message in an issue'
-    required: true
+    required: false
     default: 120 # 5 days
 runs:
   using: 'node12'
