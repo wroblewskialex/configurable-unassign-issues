@@ -23,13 +23,14 @@ async function getOpenIssues(repoOwner, repo) {
 }
 
 async function getTimeInactiveInHours(issue) {
-  // Get the last update time, ignoring comments from the bot.
+  var lastUpdated = null;
+
+  // Get the latest comment, ignoring comments from the bot.
   const comments = await octokit.issues.listComments({
     owner: repoOwner,
     repo: repo,
     issue_number: issue.number
   });
-  var lastUpdated = null;
   comments.data.reverse().forEach(comment => {
     if (comment.user.login === 'github-actions[bot]') {
       return true;
@@ -39,12 +40,30 @@ async function getTimeInactiveInHours(issue) {
       return false;
     }
   });
+
   if (!lastUpdated) {
     // If we get here, it means there were no comments, or they were all from
     // the bot. So the update time should be the issue creation time.
     lastUpdated = issue.created_at;
   }
 
+  // Check the latest assignment event -- in the case it was recently assigned,
+  // we want that to count as an update.
+  const events = await octokit.issues.listEvents({
+    owner: repoOwner,
+    repo: repo,
+    issue_number: issue.number
+  });
+  events.data.reverse().forEach(event => {
+    if (event.event === 'assigned') {
+      if ((new Date(event.created_at).getTime()) > (new Date(lastUpdated).getTime())) {
+        lastUpdated = event.created_at;
+      }
+      return false; // Found the latest event, no need to continue
+    }
+  });
+
+  // Convert lastUpdated to timeInactiveInHours
   var timeInactiveInHours = null;
   try {
     timeInactiveInHours = Math.round(
@@ -74,10 +93,31 @@ async function main() {
     const timeInactiveInHours = await getTimeInactiveInHours(issue);
     if (timeInactiveInHours === null) return;
     console.log(`timeInactiveInHours=${timeInactiveInHours}`);
-    if (timeInactiveInHours >= unassignInactiveInHours) {
+    if (timeInactiveInHours >= unassignInactiveInHours &&
+        issue.assignees.length > 0
+    ) {
       ////////////////////////
       // Unassign the issue //
       ////////////////////////
+      // Post a message
+      const body = `This issue has been inactive for ${timeInactiveInHours} ` +
+                    `hours (${(timeInactiveInHours/24).toFixed(2)} days) ` +
+                    `and is past the limit of ${unassignInactiveInHours} ` +
+                    `hours (${(unassignInactiveInHours/24).toFixed(2)} days) ` +
+                    `so is being unassigned.`;
+      try {
+        await octokit.issues.createComment({
+          owner: repoOwner,
+          repo: repo,
+          issue_number: issue.number,
+          body: body
+        });
+      }
+      catch (e) {
+        console.log(e.message);
+      }
+
+      // Unassign the issue
       const assigneesAry = issue.assignees.map(assignee => {
         return assignee.login;
       });
