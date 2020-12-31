@@ -13,7 +13,8 @@ async function getOpenIssues(repoOwner, repo) {
     response = await octokit.issues.listForRepo({
       owner: repoOwner,
       repo: repo,
-      state: 'open'
+      state: 'open',
+      per_page: 100
     });
   }
   catch (e) {
