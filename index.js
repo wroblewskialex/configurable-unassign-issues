@@ -24,7 +24,9 @@ async function getOpenIssues(repoOwner, repo) {
 }
 
 async function toUnixTimestamp(timestamp) {
-  return (new Date(timestamp).getTime());
+  const unixTimestamp = new Date(timestamp).getTime();
+  console.log(unixTimestamp);
+  return unixTimestamp;
 }
 
 async function getTimeInactiveInHours(issue) {
@@ -39,7 +41,6 @@ async function getTimeInactiveInHours(issue) {
   const commentsAry = comments.data.sort((a, b) => {
     return toUnixTimestamp(b.created_at) - toUnixTimestamp(a.created_at);
   });
-  console.log(commentsAry);
   commentsAry.forEach(comment => {
     if (comment.user.login === 'github-actions[bot]') {
       return true;
@@ -66,7 +67,6 @@ async function getTimeInactiveInHours(issue) {
   const eventsAry = events.data.sort((a, b) => {
     return toUnixTimestamp(b.created_at) - toUnixTimestamp(a.created_at);
   });
-  console.log(eventsAry);
   eventsAry.forEach(event => {
     if (event.event === 'assigned') {
       if ((new Date(event.created_at).getTime()) > (new Date(lastUpdated).getTime())) {
