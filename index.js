@@ -75,7 +75,7 @@ async function getTimeInactiveInHours(issue) {
       return false; // Found the latest event, no need to continue
     }
   });
-  console.log(lastUpdated);
+  console.log(toUnixTimestamp(lastUpdated));
   console.log(Date.now());
 
   // Convert lastUpdated to timeInactiveInHours
