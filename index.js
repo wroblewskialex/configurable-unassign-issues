@@ -75,6 +75,7 @@ async function getTimeInactiveInHours(issue) {
       return false; // Found the latest event, no need to continue
     }
   });
+  console.log(lastUpdated);
 
   // Convert lastUpdated to timeInactiveInHours
   var timeInactiveInHours = null;
