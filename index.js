@@ -23,6 +23,10 @@ async function getOpenIssues(repoOwner, repo) {
   return response;
 }
 
+async function toUnixTimestamp(timestamp) {
+  return new Date(timestamp).getTime();
+}
+
 async function getTimeInactiveInHours(issue) {
   var lastUpdated = null;
 
@@ -33,8 +37,9 @@ async function getTimeInactiveInHours(issue) {
     issue_number: issue.number
   });
   const commentsAry = comments.data.sort((a, b) => {
-    return (new Date(b.created_at).getTime()) - (new Date(a.created_at).getTime());
+    return toUnixTimestamp(b.created_at) - toUnixTimestamp(a.created_at);
   });
+  console.log(commentsAry);
   commentsAry.forEach(comment => {
     if (comment.user.login === 'github-actions[bot]') {
       return true;
@@ -59,8 +64,9 @@ async function getTimeInactiveInHours(issue) {
     issue_number: issue.number
   });
   const eventsAry = events.data.sort((a, b) => {
-    return (new Date(b.created_at).getTime()) - (new Date(a.created_at).getTime());
+    return toUnixTimestamp(b.created_at) - toUnixTimestamp(a.created_at);
   });
+  console.log(eventsAry);
   eventsAry.forEach(event => {
     if (event.event === 'assigned') {
       if ((new Date(event.created_at).getTime()) > (new Date(lastUpdated).getTime())) {
@@ -74,7 +80,7 @@ async function getTimeInactiveInHours(issue) {
   var timeInactiveInHours = null;
   try {
     timeInactiveInHours = Math.round(
-      (Date.now() - (new Date(lastUpdated).getTime())) / (1000 * 60 * 60)
+      (Date.now() - toUnixTimestamp(lastUpdated)) / (1000 * 60 * 60)
     );
   }
   catch (e) {
