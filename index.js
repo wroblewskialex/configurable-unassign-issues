@@ -23,7 +23,7 @@ async function getOpenIssues(repoOwner, repo) {
   return response;
 }
 
-async function toUnixTimestamp(timestamp) {
+function toUnixTimestamp(timestamp) {
   const unixTimestamp = new Date(timestamp).getTime();
   console.log(unixTimestamp);
   return unixTimestamp;
