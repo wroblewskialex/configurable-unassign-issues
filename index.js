@@ -76,6 +76,7 @@ async function getTimeInactiveInHours(issue) {
     }
   });
   console.log(lastUpdated);
+  console.log(Date.now());
 
   // Convert lastUpdated to timeInactiveInHours
   var timeInactiveInHours = null;
