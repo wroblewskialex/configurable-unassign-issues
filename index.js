@@ -24,7 +24,7 @@ async function getOpenIssues(repoOwner, repo) {
 }
 
 async function toUnixTimestamp(timestamp) {
-  return new Date(timestamp).getTime();
+  return (new Date(timestamp).getTime());
 }
 
 async function getTimeInactiveInHours(issue) {
