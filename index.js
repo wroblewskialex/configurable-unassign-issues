@@ -25,7 +25,6 @@ async function getOpenIssues(repoOwner, repo) {
 
 function toUnixTimestamp(timestamp) {
   const unixTimestamp = new Date(timestamp).getTime();
-  console.log(unixTimestamp);
   return unixTimestamp;
 }
 
@@ -75,8 +74,6 @@ async function getTimeInactiveInHours(issue) {
       return false; // Found the latest event, no need to continue
     }
   });
-  console.log(toUnixTimestamp(lastUpdated));
-  console.log(Date.now());
 
   // Convert lastUpdated to timeInactiveInHours
   var timeInactiveInHours = null;
