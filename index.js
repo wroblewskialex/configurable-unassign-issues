@@ -35,7 +35,6 @@ async function getTimeInactiveInHours(issue) {
   const commentsAry = comments.data.sort((a, b) => {
     return (new Date(b.created_at).getTime()) - (new Date(a.created_at).getTime());
   });
-  console.log(commentsAry);
   commentsAry.forEach(comment => {
     if (comment.user.login === 'github-actions[bot]') {
       return true;
@@ -62,7 +61,6 @@ async function getTimeInactiveInHours(issue) {
   const eventsAry = events.data.sort((a, b) => {
     return (new Date(b.created_at).getTime()) - (new Date(a.created_at).getTime());
   });
-  console.log(eventsAry);
   eventsAry.forEach(event => {
     if (event.event === 'assigned') {
       if ((new Date(event.created_at).getTime()) > (new Date(lastUpdated).getTime())) {
