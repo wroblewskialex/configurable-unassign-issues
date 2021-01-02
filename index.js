@@ -136,14 +136,14 @@ async function main() {
         return assignee.login;
       });
       try {
+        console.log("Pushing to unassignedIssues");
+        unassignedIssues.push(issue.number);
         await octokit.issues.removeAssignees({
           owner: repoOwner,
           repo: repo,
           issue_number: issue.number,
           assignees: assigneesAry
         });
-        console.log("Pushing to unassignedIssues");
-        unassignedIssues.push(issue.number);
       }
       catch (e) {
         console.log(e.message);
