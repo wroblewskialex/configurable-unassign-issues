@@ -142,11 +142,12 @@ async function main() {
           issue_number: issue.number,
           assignees: assigneesAry
         });
+        console.log("Pushing to unassignedIssues");
+        unassignedIssues.push(issue.number);
       }
       catch (e) {
         console.log(e.message);
       }
-      unassignedIssues.push(issue.number);
     }
     else if (timeInactiveInHours >= warningInactiveInHours &&
              issue.assignees.length > 0
