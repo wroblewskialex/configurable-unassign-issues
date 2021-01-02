@@ -184,6 +184,7 @@ async function main() {
     }
   });
 
+  console.log(unassignedIssues);
   core.setOutput('unassigned_issues', unassignedIssues.join(','));
   core.setOutput('warned_issues', warnedIssues.join(','));
 }
