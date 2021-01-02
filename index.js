@@ -103,7 +103,9 @@ async function main() {
   // in it that it will be unassigned in the near future.
   var unassignedIssues = [];
   var warnedIssues = [];
-  await issuesAry.forEach(async issue => {
+  // issuesAry.forEach(async issue => {
+  for (var i = 0; i < issuesAry.length; i++) {
+    const issue = issuesAry[i];
     const timeInactiveInHours = await getTimeInactiveInHours(issue);
     if (timeInactiveInHours === null) return;
     console.log(`timeInactiveInHours=${timeInactiveInHours}`);
@@ -183,7 +185,8 @@ async function main() {
         }
       }
     }
-  });
+  }
+  // });
 
   console.log(unassignedIssues);
   core.setOutput('unassigned_issues', unassignedIssues.join(','));
