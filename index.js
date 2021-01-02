@@ -103,7 +103,7 @@ async function main() {
   // in it that it will be unassigned in the near future.
   var unassignedIssues = [];
   var warnedIssues = [];
-  issuesAry.forEach(async issue => {
+  await issuesAry.forEach(async issue => {
     const timeInactiveInHours = await getTimeInactiveInHours(issue);
     if (timeInactiveInHours === null) return;
     console.log(`timeInactiveInHours=${timeInactiveInHours}`);
