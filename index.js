@@ -101,6 +101,8 @@ async function main() {
 
   // For inactive issues, unassign the issue or post a warning message
   // in it that it will be unassigned in the near future.
+  var unassignedIssues = [];
+  var warnedIssues = [];
   issuesAry.forEach(async issue => {
     const timeInactiveInHours = await getTimeInactiveInHours(issue);
     if (timeInactiveInHours === null) return;
@@ -140,6 +142,7 @@ async function main() {
           issue_number: issue.number,
           assignees: assigneesAry
         });
+        unassignedIssues.push(issue.number);
       }
       catch (e) {
         console.log(e.message);
@@ -172,6 +175,7 @@ async function main() {
             issue_number: issue.number,
             body: body
           });
+          warnedIssues.push(issue.number);
         }
         catch (e) {
           console.log(e.message);
@@ -179,6 +183,9 @@ async function main() {
       }
     }
   });
+
+  core.setOutput('unassigned_issues', unassignedIssues.join(','));
+  core.setOutput('warned_issues', warnedIssues.join(','));
 }
 
 main();
