@@ -103,7 +103,6 @@ async function main() {
   // in it that it will be unassigned in the near future.
   var unassignedIssues = [];
   var warnedIssues = [];
-  // issuesAry.forEach(async issue => {
   for (var i = 0; i < issuesAry.length; i++) {
     const issue = issuesAry[i];
     const timeInactiveInHours = await getTimeInactiveInHours(issue);
@@ -167,10 +166,11 @@ async function main() {
       if (comments.data.length === 0 ||
           comments.data[comments.data.length - 1].user.login !== 'github-actions[bot]'
       ) {
+        const willBeUnassignedInHours = unassignInactiveInHours - timeInactiveInHours;
         const body = `This issue has been inactive for ${timeInactiveInHours} ` +
                      `hours (${(timeInactiveInHours/24).toFixed(2)} days) ` +
-                     `and will be automatically unassigned after ${unassignInactiveInHours} ` +
-                     `hours (${(unassignInactiveInHours/24).toFixed(2)} days).`;
+                     `and will be automatically unassigned after ${willBeUnassignedInHours} ` +
+                     `more hours (${(willBeUnassignedInHours/24).toFixed(2)} days).`;
         try {
           await octokit.issues.createComment({
             owner: repoOwner,
@@ -186,9 +186,7 @@ async function main() {
       }
     }
   }
-  // });
 
-  console.log(unassignedIssues);
   core.setOutput('unassigned_issues', unassignedIssues.join(','));
   core.setOutput('warned_issues', warnedIssues.join(','));
 }
