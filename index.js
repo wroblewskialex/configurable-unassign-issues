@@ -40,15 +40,16 @@ async function getTimeInactiveInHours(issue) {
   const commentsAry = comments.data.sort((a, b) => {
     return toUnixTimestamp(b.created_at) - toUnixTimestamp(a.created_at);
   });
-  commentsAry.forEach(comment => {
+  for (var i = 0; i < commentsAry.length; i++) {
+    const comment = commentsAry[i];
     if (comment.user.login === 'github-actions[bot]') {
-      return true;
+      continue;
     }
     else {
       lastUpdated = comment.created_at;
-      return false;
+      break;
     }
-  });
+  }
 
   if (!lastUpdated) {
     // If we get here, it means there were no comments, or they were all from
@@ -66,14 +67,15 @@ async function getTimeInactiveInHours(issue) {
   const eventsAry = events.data.sort((a, b) => {
     return toUnixTimestamp(b.created_at) - toUnixTimestamp(a.created_at);
   });
-  eventsAry.forEach(event => {
+  for (var i = 0; i < eventsAry.length; i++) {
+    const event = eventsAry[i];
     if (event.event === 'assigned') {
-      if ((new Date(event.created_at).getTime()) > (new Date(lastUpdated).getTime())) {
+      if (toUnixTimestamp(event.created_at) > toUnixTimestamp(lastUpdated)) {
         lastUpdated = event.created_at;
       }
-      return false; // Found the latest event, no need to continue
+      break; // Found the latest event, no need to continue
     }
-  });
+  }
 
   // Convert lastUpdated to timeInactiveInHours
   var timeInactiveInHours = null;
