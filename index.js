@@ -2,7 +2,9 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const token = core.getInput('token');
 const unassignInactiveInHours = core.getInput('unassign_inactive_in_hours');
+const unassignInactiveMessage = core.getInput('unassign_inactive_message');
 const warningInactiveInHours = core.getInput('warning_inactive_in_hours');
+const warningInactiveMessage = core.getInput('warning_inactive_message');
 const repoOwner = github.context.repo.owner;
 const repo = github.context.repo.repo;
 const octokit = github.getOctokit(token);
@@ -117,11 +119,12 @@ async function main() {
       // Unassign the issue //
       ////////////////////////
       // Post a message
-      const body = `This issue has been inactive for ${timeInactiveInHours} ` +
+      const body =  `This issue has been inactive for ${timeInactiveInHours} ` +
                     `hours (${(timeInactiveInHours/24).toFixed(2)} days) ` +
                     `and is past the limit of ${unassignInactiveInHours} ` +
                     `hours (${(unassignInactiveInHours/24).toFixed(2)} days) ` +
-                    `so is being unassigned.`;
+                    `so is being unassigned.` +
+                    `${unassignInactiveMessage} \n `
       try {
         await octokit.issues.createComment({
           owner: repoOwner,
@@ -172,7 +175,8 @@ async function main() {
         const body = `This issue has been inactive for ${timeInactiveInHours} ` +
                      `hours (${(timeInactiveInHours/24).toFixed(2)} days) ` +
                      `and will be automatically unassigned after ${willBeUnassignedInHours} ` +
-                     `more hours (${(willBeUnassignedInHours/24).toFixed(2)} days).`;
+                     `more hours (${(willBeUnassignedInHours/24).toFixed(2)} days).` +
+                     `${warningInactiveMessage}`;
         try {
           await octokit.issues.createComment({
             owner: repoOwner,
