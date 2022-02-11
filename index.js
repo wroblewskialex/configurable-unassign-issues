@@ -178,7 +178,7 @@ async function main() {
                      `more hours (${(willBeUnassignedInHours/24).toFixed(2)} days).` +
                      `If you need help or have questions, please visit slack during ` + 
                      `office hours (Tuesdays 6-8 PM PST) in the #casa channel. ` + 
-                     `Link to slack: https://rubyforgood.herokuapp.com/ \n` + 
+                     `Link to slack: https://rubyforgood.herokuapp.com/ \n\n` + 
                      `${warningInactiveMessage}`;
         try {
           await octokit.issues.createComment({
