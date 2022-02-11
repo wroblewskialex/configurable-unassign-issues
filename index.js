@@ -176,10 +176,10 @@ async function main() {
                      `hours (${(timeInactiveInHours/24).toFixed(2)} days) ` +
                      `and will be automatically unassigned after ${willBeUnassignedInHours} ` +
                      `more hours (${(willBeUnassignedInHours/24).toFixed(2)} days).` +
-                     `${warningInactiveMessage}` + 
                      `If you need help or have questions, please visit slack during ` + 
                      `office hours (Tuesdays 6-8 PM PST) in the #casa channel.` + 
-                     `Link to slack: https://rubyforgood.herokuapp.com/`;
+                     `Link to slack: https://rubyforgood.herokuapp.com/` + 
+                     `${warningInactiveMessage}`;
         try {
           await octokit.issues.createComment({
             owner: repoOwner,
