@@ -5,6 +5,7 @@ const unassignInactiveInHours = core.getInput('unassign_inactive_in_hours');
 const unassignInactiveMessage = core.getInput('unassign_inactive_message');
 const warningInactiveInHours = core.getInput('warning_inactive_in_hours');
 const warningInactiveMessage = core.getInput('warning_inactive_message');
+const officeHours = core.getInput('offce_hours');
 const repoOwner = github.context.repo.owner;
 const repo = github.context.repo.repo;
 const octokit = github.getOctokit(token);
@@ -176,9 +177,9 @@ async function main() {
                      `hours (${(timeInactiveInHours/24).toFixed(2)} days) ` +
                      `and will be automatically unassigned after ${willBeUnassignedInHours} ` +
                      `more hours (${(willBeUnassignedInHours/24).toFixed(2)} days). ` +
-                     `If you need help or have questions, please visit slack during ` + 
-                     `office hours (Tuesdays 6-8 PM PST) in the #casa channel. ` + 
-                     `Link to slack: https://rubyforgood.herokuapp.com/ \n\n` + 
+                     `If you have questions, please visit the #casa channel in slack during ` + 
+                     `${officeHours}`+ `. ` + 
+                     `Link: https://rubyforgood.herokuapp.com/ \n\n` + 
                      `${warningInactiveMessage}`;
         try {
           await octokit.issues.createComment({
