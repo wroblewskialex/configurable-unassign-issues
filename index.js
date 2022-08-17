@@ -175,7 +175,7 @@ async function main() {
         const willBeUnassignedInHours = unassignInactiveInHours - timeInactiveInHours;
         const body = `This issue has been inactive for ${timeInactiveInHours} ` +
                      `hours (${(timeInactiveInHours/24).toFixed(2)} days) ` +
-                     `and will be automatically unassigned after ${willBeUnassignedInHours} ` +
+                     `and will be unassigned after ${willBeUnassignedInHours} ` +
                      `more hours (${(willBeUnassignedInHours/24).toFixed(2)} days). ` +
                      `If you have questions, please visit the #casa channel in slack during ` + 
                      `${officeHours}`+ `. ` + 
