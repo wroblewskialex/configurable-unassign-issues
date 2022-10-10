@@ -1,5 +1,6 @@
 name: 'Unassign inactive issues'
 description: 'Automatically unassigns issues that have been inactive'
+icon: align-left
 inputs:
   token:
     description: 'github token'
